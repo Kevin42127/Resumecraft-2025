@@ -15,18 +15,6 @@ export default function ForumPage() {
   const [showDeveloperPanel, setShowDeveloperPanel] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  // 隱藏的開發者入口 - 按 Ctrl+Shift+D 開啟
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.shiftKey && event.key === 'D') {
-        event.preventDefault()
-        setShowDeveloperPanel(true)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
 
   useEffect(() => {
     fetchPosts()
