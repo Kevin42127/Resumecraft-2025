@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { downloadResumeAsPDF } from '@/lib/pdfGenerator'
 
-const USE_CSHARP_PDF = process.env.NEXT_PUBLIC_USE_BACKEND_PDF === 'true'
+// 強制使用前端 PDF 生成，避免 Vercel 部署問題
+const USE_CSHARP_PDF = false
 const CSHARP_PDF_API = process.env.NEXT_PUBLIC_CSHARP_PDF_API || 'http://localhost:5000/generate-pdf'
 const NODE_PDF_API = '/api/generate-pdf'
 

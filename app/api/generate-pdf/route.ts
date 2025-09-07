@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import puppeteer from 'puppeteer'
 
+export const dynamic = 'force-dynamic'
+
 // ResumeCraft 專用 PDF 產生 API
 // 僅使用 Puppeteer 於後端產生高品質 PDF
 // 前端需傳送完整 HTML（含 head、CSS、resume-preview 區塊）
@@ -16,10 +18,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 啟動 Puppeteer 無頭瀏覽器
+    // 啟動 Puppeteer 無頭瀏覽器 - Vercel 優化配置
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu'
+      ],
     })
     const page = await browser.newPage()
 
