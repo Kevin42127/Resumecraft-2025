@@ -6,13 +6,11 @@ import Link from 'next/link'
 import { MessageSquare, Plus, Clock, User, ThumbsUp, MessageCircle, ArrowLeft, Shield } from 'lucide-react'
 import ForumPostForm from '@/components/Forum/ForumPostForm'
 import ForumPostList from '@/components/Forum/ForumPostList'
-import DeveloperPanel from '@/components/Forum/DeveloperPanel'
 import { ForumPost } from '@/types/forum'
 
 export default function ForumPage() {
   const [posts, setPosts] = useState<ForumPost[]>([])
   const [showPostForm, setShowPostForm] = useState(false)
-  const [showDeveloperPanel, setShowDeveloperPanel] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
 
@@ -160,14 +158,6 @@ export default function ForumPage() {
         />
       )}
 
-      {/* Developer Panel Modal */}
-      {showDeveloperPanel && (
-        <DeveloperPanel
-          onClose={() => setShowDeveloperPanel(false)}
-          posts={posts}
-          onPostUpdate={fetchPosts}
-        />
-      )}
     </div>
   )
 } 
