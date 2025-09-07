@@ -1,0 +1,16 @@
+{
+    "name": "ResumeCraft",
+    "short_name": "ResumeCraft",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "description": "現代化履歷製作工具",
+    "icons": [
+      {
+        "src": "/logo.svg",
+        "sizes": "512x512",
+        "type": "image/svg+xml"
+      }
+    ]
+  }

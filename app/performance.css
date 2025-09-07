@@ -1,0 +1,99 @@
+/* 效能優化 CSS */
+
+/* 關鍵渲染路徑優化 */
+.critical-content {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* 圖片懶載入優化 */
+.lazy-image {
+  loading: lazy;
+  decoding: async;
+}
+
+/* 動畫效能優化 */
+.animate-blob {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* 滾動效能優化 */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 字體載入優化 */
+.font-display-swap {
+  font-display: swap;
+}
+
+/* 減少重繪和重排 */
+.optimize-render {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 骨架屏動畫 */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* 載入狀態優化 */
+.loading-spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 減少不必要的動畫 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 觸控優化 */
+@media (hover: none) and (pointer: coarse) {
+  .hover-only {
+    display: none;
+  }
+}
+
+/* 高對比度模式支援 */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid #000;
+  }
+  
+  .btn-primary {
+    background: #000;
+    color: #fff;
+  }
+} 
