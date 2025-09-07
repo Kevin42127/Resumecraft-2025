@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { feedbacksData } from '@/lib/adminData'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     // 檢查認證

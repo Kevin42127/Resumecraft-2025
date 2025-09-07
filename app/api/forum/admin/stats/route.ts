@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { AdminStats } from '@/types/forum'
 
+export const dynamic = 'force-dynamic'
+
 // 模擬資料庫存儲（與主要posts路由共享）
 // 在實際應用中，這應該從資料庫中獲取
 let posts: any[] = []
