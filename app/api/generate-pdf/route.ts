@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 啟動 Puppeteer 無頭瀏覽器 - 本地開發優化配置
+    // 啟動 Puppeteer 無頭瀏覽器 - Railway 生產環境優化配置
     const browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -33,9 +33,38 @@ export async function POST(request: NextRequest) {
         '--disable-features=VizDisplayCompositor',
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding'
+        '--disable-renderer-backgrounding',
+        '--single-process', // 重要：避免多進程問題
+        '--no-zygote',
+        '--disable-extensions',
+        '--disable-plugins',
+        '--disable-default-apps',
+        '--disable-sync',
+        '--disable-translate',
+        '--hide-scrollbars',
+        '--mute-audio',
+        '--disable-background-networking',
+        '--disable-client-side-phishing-detection',
+        '--disable-crash-reporter',
+        '--disable-oopr-debug-crash-dump',
+        '--no-crash-upload',
+        '--disable-low-res-tiling',
+        '--log-level=3',
+        '--silent',
+        '--disable-logging',
+        '--disable-gpu-logging',
+        '--disable-software-rasterizer',
+        '--disable-features=TranslateUI',
+        '--disable-ipc-flooding-protection',
+        '--disable-hang-monitor',
+        '--disable-prompt-on-repost',
+        '--disable-domain-reliability',
+        '--disable-component-extensions-with-background-pages',
+        '--metrics-recording-only',
+        '--no-report-upload'
       ],
-      timeout: 30000, // 增加超時時間
+      timeout: 60000, // 增加超時時間到 60 秒
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, // 使用系統 Chrome
     })
     const page = await browser.newPage()
 

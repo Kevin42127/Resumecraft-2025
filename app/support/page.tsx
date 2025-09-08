@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft, Heart, Coffee, Star, Zap, Gift, MessageSquare } from 'lucide-react'
+import { ArrowLeft, Heart, Coffee, Zap, Gift, MessageSquare } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function SupportPage() {
@@ -51,30 +51,7 @@ export default function SupportPage() {
           </section>
 
           {/* Support Methods */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* 給予評價 */}
-            <div className="card p-8 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mb-6">
-                <Star className="w-8 h-8 text-yellow-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">給予評價</h3>
-              <p className="text-gray-600 mb-6">
-                如果您覺得 ResumeCraft 對您有幫助，請為我們留下五星評價。
-              </p>
-              <div className="flex justify-center space-x-1 mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="w-6 h-6 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <a 
-                href="https://github.com/Kevin42127/resumecraft-online" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-full bg-yellow-500 text-white font-medium py-3 px-6 rounded-lg inline-block text-center"
-              >
-                前往評價
-              </a>
-            </div>
+          <section className="max-w-md mx-auto">
 
             {/* 金錢支持 */}
             <div className="card p-8 text-center">
@@ -196,7 +173,7 @@ export default function SupportPage() {
         <div className="container px-4 mx-auto">
           <div className="text-center">
             <p className="mb-4 text-white">
-              網站由 ChatGPT 建立專案結構，程式碼由 Cursor 撰寫，最後由人工進行網站測試。
+              網站採用現代化開發技術，結合 AI 輔助開發與人工優化，確保產品品質與用戶體驗。
             </p>
             <div className="flex flex-wrap items-center justify-center mb-4 space-x-6">
               <Link href="/privacy" className="text-white">

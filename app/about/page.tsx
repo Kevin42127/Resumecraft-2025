@@ -44,7 +44,7 @@ export default function AboutPage() {
               </motion.div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">關於我們（About Us）</h2>
               <p className="text-xl text-gray-600 leading-relaxed">
-                ResumeCraft 是由我個人開發的一款現代化履歷製作工具，目的是為了提供一個不需要登入、隱私友善、好看又實用的線上履歷編輯平台。
+                ResumeCraft 是由我個人開發並持續維護的現代化履歷製作工具，致力於為每位用戶提供專業、安全、易用的履歷製作體驗。我們專注於隱私保護，提供免註冊、免追蹤的優質服務。
               </p>
             </div>
           </section>
@@ -75,7 +75,7 @@ export default function AboutPage() {
               </div>
               <div className="bg-green-50 p-6 rounded-lg">
                 <p className="text-green-800 leading-relaxed">
-                  這些都不是我想要的。所以我自己動手開發了 ResumeCraft：一個免註冊、免追蹤、即用即走，且擁有漂亮介面與 PDF 匯出功能的履歷編輯工具。
+                  這些都不是我想要的。所以我投入大量時間和精力，從零開始開發了 ResumeCraft：一個免註冊、免追蹤、即用即走，且擁有專業介面與高品質 PDF 匯出功能的履歷編輯工具。每一個功能都經過精心設計和優化，確保為用戶提供最佳的體驗。
                 </p>
               </div>
             </div>
@@ -108,13 +108,17 @@ export default function AboutPage() {
                 <p className="text-orange-700 text-sm">履歷表單處理</p>
               </div>
               <div className="bg-red-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-red-900 mb-2">C# PDF 服務（DinkToPdf / IronPDF / QuestPDF）</h4>
-                <p className="text-red-700 text-sm">後端以 C# 產生高品質 PDF，完整支援 HTML/CSS 排版</p>
+                <h4 className="font-semibold text-red-900 mb-2">雙重 PDF 生成方案（Puppeteer + html2canvas + jsPDF）</h4>
+                <p className="text-red-700 text-sm">後端使用 Puppeteer 生成高品質 PDF，前端備用 html2canvas + jsPDF 方案，完整支援中文字體與複雜排版</p>
               </div>
             </div>
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <p className="text-gray-700 text-center">
                 <strong>這個網站從介面設計、功能架構、API 撰寫到測試，都是我一人完成。</strong>
+                <br />
+                <span className="text-sm text-gray-600 mt-2 block">
+                  採用現代化技術棧，確保系統穩定性和可擴展性，並持續進行安全更新和功能優化。
+                </span>
               </p>
             </div>
           </section>

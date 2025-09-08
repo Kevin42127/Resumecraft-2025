@@ -65,8 +65,12 @@ export default function Header({}: HeaderProps) {
       <div className="flex items-center justify-between">
         {/* Logo and Navigation */}
         <div className="flex items-center space-x-6">
-          <Link href="/" className="flex items-center space-x-2">
-            <FileText className="w-8 h-8 text-primary-600" />
+          <Link href="/" className="flex items-center space-x-2 hover:opacity-90 transition-opacity duration-200">
+            <img 
+              src="/images/logo/logo-header.png" 
+              alt="ResumeCraft Logo" 
+              className="w-8 h-8 drop-shadow-sm"
+            />
             <span className="text-xl font-bold text-white">ResumeCraft</span>
           </Link>
           

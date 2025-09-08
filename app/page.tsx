@@ -199,7 +199,7 @@ export default function HomePage() {
         <div className="container px-4 mx-auto">
           <div className="text-center">
             <p className="mb-4 text-white">
-              網站由 ChatGPT 建立專案結構，程式碼由 Cursor 撰寫，最後由人工進行網站測試。
+              網站採用現代化開發技術，結合 AI 輔助開發與人工優化，確保產品品質與用戶體驗。
             </p>
             <div className="flex flex-wrap items-center justify-center mb-4 space-x-6">
               <Link href="/privacy" className="text-white">
