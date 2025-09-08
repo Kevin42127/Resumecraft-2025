@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 啟動 Puppeteer 無頭瀏覽器 - Vercel 優化配置
+    // 啟動 Puppeteer 無頭瀏覽器 - 本地開發優化配置
     const browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -28,9 +28,14 @@ export async function POST(request: NextRequest) {
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
         '--no-zygote',
-        '--single-process',
-        '--disable-gpu'
+        '--disable-gpu',
+        '--disable-web-security',
+        '--disable-features=VizDisplayCompositor',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding'
       ],
+      timeout: 30000, // 增加超時時間
     })
     const page = await browser.newPage()
 
@@ -81,7 +86,7 @@ export async function POST(request: NextRequest) {
     })
 
     // 等待內容完全載入
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 2000))
 
     // 產生高品質 PDF
     const pdf = await page.pdf({
@@ -95,9 +100,15 @@ export async function POST(request: NextRequest) {
       },
       preferCSSPageSize: false, // 使用固定 A4 格式
       scale: 1.0, // 確保 1:1 比例
+      timeout: 30000, // 增加 PDF 生成超時時間
     })
 
-    await browser.close()
+    // 確保瀏覽器正確關閉
+    try {
+      await browser.close()
+    } catch (closeError) {
+      console.warn('Browser close warning:', closeError)
+    }
 
     // 回傳 PDF Blob
     return new NextResponse(pdf, {
@@ -108,6 +119,17 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('PDF generation error:', error)
+    
+    // 如果是 Puppeteer 相關錯誤，提供更詳細的錯誤信息
+    if (error instanceof Error) {
+      if (error.message.includes('Target closed') || error.message.includes('Protocol error')) {
+        return NextResponse.json(
+          { error: 'PDF 生成服務暫時不可用，請稍後再試或使用前端 PDF 生成' },
+          { status: 503 }
+        )
+      }
+    }
+    
     return NextResponse.json(
       { error: 'PDF 生成失敗，請稍後再試' },
       { status: 500 }

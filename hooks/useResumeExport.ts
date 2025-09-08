@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { downloadResumeAsPDF } from '@/lib/pdfGenerator'
 
-// 強制使用前端 PDF 生成，避免 Vercel 部署問題
-const USE_CSHARP_PDF = false
+// 在開發環境中強制使用前端 PDF 生成，避免 Puppeteer 問題
+const USE_CSHARP_PDF = process.env.NODE_ENV === 'development' ? false : (process.env.NEXT_PUBLIC_USE_BACKEND_PDF === 'true')
 const CSHARP_PDF_API = process.env.NEXT_PUBLIC_CSHARP_PDF_API || 'http://localhost:5000/generate-pdf'
 const NODE_PDF_API = '/api/generate-pdf'
 
@@ -108,10 +108,8 @@ export const useResumeExport = () => {
     const { filename = 'resume.pdf' } = options
     try {
       setExportState({ isExporting: true, progress: 10, error: null })
-      
       // 使用我們修改的前端 PDF 生成器
       await downloadResumeAsPDF(element, filename)
-      
       setExportState({ isExporting: false, progress: 100, error: null })
       return { success: true, filename }
     } catch (error) {
@@ -127,13 +125,24 @@ export const useResumeExport = () => {
       setExportState({ isExporting: true, progress: 10, error: null })
       const htmlContent = await getFullHtmlForExport(element)
       setExportState(prev => ({ ...prev, progress: 30 }))
+      
       const response = await fetch(NODE_PDF_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html: htmlContent, filename })
       })
       setExportState(prev => ({ ...prev, progress: 70 }))
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+      if (!response.ok) {
+        // 如果是服務不可用錯誤，自動降級到前端 PDF 生成
+        if (response.status === 503) {
+          console.warn('後端 PDF 生成服務不可用，降級到前端生成')
+          setExportState(prev => ({ ...prev, progress: 50 }))
+          await downloadResumeAsPDF(element, filename)
+          setExportState({ isExporting: false, progress: 100, error: null })
+          return { success: true, filename }
+        }
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       
@@ -174,8 +183,17 @@ export const useResumeExport = () => {
       setExportState({ isExporting: false, progress: 100, error: null })
       return { success: true, filename }
     } catch (error) {
-      setExportState({ isExporting: false, progress: 0, error: 'PDF生成失敗，請稍後再試' })
-      throw error
+      // 如果後端 PDF 生成失敗，嘗試前端生成
+      try {
+        console.warn('後端 PDF 生成失敗，嘗試前端生成:', error)
+        setExportState(prev => ({ ...prev, progress: 50 }))
+        await downloadResumeAsPDF(element, filename)
+        setExportState({ isExporting: false, progress: 100, error: null })
+        return { success: true, filename }
+      } catch (frontendError) {
+        setExportState({ isExporting: false, progress: 0, error: 'PDF生成失敗，請稍後再試' })
+        throw frontendError
+      }
     }
   }
 

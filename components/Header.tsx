@@ -31,13 +31,11 @@ export default function Header({}: HeaderProps) {
 
   const handleExportPDF = async () => {
     try {
-      // 嘗試使用前端 PDF 生成
       await exportResume({ filename: 'resume.pdf' })
       console.log('PDF 匯出成功！')
     } catch (error) {
       console.error('PDF 匯出失敗:', error)
-      // 如果前端 PDF 生成失敗，顯示提示
-      alert('PDF 匯出失敗，請嘗試使用瀏覽器的列印功能（Ctrl+P）並選擇「另存為 PDF」')
+      // 錯誤處理已在Hook中完成
     }
   }
 
