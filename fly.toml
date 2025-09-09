@@ -1,0 +1,29 @@
+# fly.toml app configuration file generated for resumecraft-2025
+
+app = "resumecraft-2025"
+primary_region = "nrt"  # Tokyo region for better Asia performance
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+  PORT = "3000"
+  HOSTNAME = "0.0.0.0"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+[[statics]]
+  guest_path = "/app/public"
+  url_prefix = "/public/"

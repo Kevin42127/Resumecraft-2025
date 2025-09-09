@@ -10,7 +10,7 @@ const nextConfig = {
   
   // 圖片優化
   images: {
-    domains: ['localhost', 'vercel.app', 'onrender.com'],
+    domains: ['localhost', 'vercel.app', 'fly.dev'],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
     unoptimized: false,
