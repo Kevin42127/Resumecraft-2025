@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 啟動 Puppeteer 無頭瀏覽器 - Railway 生產環境優化配置
+    // 啟動 Puppeteer 無頭瀏覽器 - 本地開發優化配置
     const browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -34,37 +34,10 @@ export async function POST(request: NextRequest) {
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
         '--disable-renderer-backgrounding',
-        '--single-process', // 重要：避免多進程問題
-        '--no-zygote',
-        '--disable-extensions',
-        '--disable-plugins',
-        '--disable-default-apps',
-        '--disable-sync',
-        '--disable-translate',
-        '--hide-scrollbars',
-        '--mute-audio',
-        '--disable-background-networking',
-        '--disable-client-side-phishing-detection',
-        '--disable-crash-reporter',
-        '--disable-oopr-debug-crash-dump',
-        '--no-crash-upload',
-        '--disable-low-res-tiling',
-        '--log-level=3',
-        '--silent',
-        '--disable-logging',
-        '--disable-gpu-logging',
-        '--disable-software-rasterizer',
-        '--disable-features=TranslateUI',
-        '--disable-ipc-flooding-protection',
-        '--disable-hang-monitor',
-        '--disable-prompt-on-repost',
-        '--disable-domain-reliability',
-        '--disable-component-extensions-with-background-pages',
-        '--metrics-recording-only',
-        '--no-report-upload'
+        '--font-render-hinting=none',
+        '--disable-font-subpixel-positioning'
       ],
-      timeout: 60000, // 增加超時時間到 60 秒
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, // 使用系統 Chrome
+      timeout: 30000, // 增加超時時間
     })
     const page = await browser.newPage()
 
@@ -96,12 +69,14 @@ export async function POST(request: NextRequest) {
           max-height: none !important;
           margin: 0 !important;
           padding: 0 !important;
+          font-family: 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 'Noto Sans', 'Arial', 'sans-serif' !important;
         }
         
         /* 確保所有文字在 PDF 中清晰可見 */
         * {
           -webkit-print-color-adjust: exact !important;
           color-adjust: exact !important;
+          font-family: 'Noto Sans CJK TC', 'Noto Sans CJK SC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 'Noto Sans', 'Arial', 'sans-serif' !important;
         }
         
         /* 確保間距正確 */
@@ -118,25 +93,31 @@ export async function POST(request: NextRequest) {
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     // 產生高品質 PDF
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '10mm',
-        right: '10mm',
-        bottom: '10mm',
-        left: '10mm',
-      },
-      preferCSSPageSize: false, // 使用固定 A4 格式
-      scale: 1.0, // 確保 1:1 比例
-      timeout: 30000, // 增加 PDF 生成超時時間
-    })
-
-    // 確保瀏覽器正確關閉
+    let pdf: Uint8Array
     try {
-      await browser.close()
-    } catch (closeError) {
-      console.warn('Browser close warning:', closeError)
+      pdf = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '10mm',
+          right: '10mm',
+          bottom: '10mm',
+          left: '10mm',
+        },
+        preferCSSPageSize: false, // 使用固定 A4 格式
+        scale: 1.0, // 確保 1:1 比例
+        timeout: 30000, // 增加 PDF 生成超時時間
+      })
+    } catch (pdfError) {
+      console.error('PDF generation failed:', pdfError)
+      throw pdfError
+    } finally {
+      // 確保瀏覽器正確關閉
+      try {
+        await browser.close()
+      } catch (closeError) {
+        console.warn('Browser close warning:', closeError)
+      }
     }
 
     // 回傳 PDF Blob

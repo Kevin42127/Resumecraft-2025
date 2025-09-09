@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  resumecraft:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - NEXT_PUBLIC_CSHARP_PDF_API=${NEXT_PUBLIC_CSHARP_PDF_API:-http://localhost:5000/generate-pdf}
+    volumes:
+      # 持久化數據目錄
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/email-status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - resumecraft-network
+
+  # 可選：如果需要外部 PDF 服務
+  # pdf-service:
+  #   image: your-pdf-service:latest
+  #   ports:
+  #     - "5000:5000"
+  #   restart: unless-stopped
+  #   networks:
+  #     - resumecraft-network
+
+networks:
+  resumecraft-network:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local

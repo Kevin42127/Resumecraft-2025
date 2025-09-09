@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { downloadResumeAsPDF } from '@/lib/pdfGenerator'
 
-// 在開發環境中強制使用前端 PDF 生成，避免 Puppeteer 問題
-const USE_CSHARP_PDF = process.env.NODE_ENV === 'development' ? false : (process.env.NEXT_PUBLIC_USE_BACKEND_PDF === 'true')
+// 強制使用後端 PDF 生成
+const USE_BACKEND_PDF = true
 const CSHARP_PDF_API = process.env.NEXT_PUBLIC_CSHARP_PDF_API || 'http://localhost:5000/generate-pdf'
 const NODE_PDF_API = '/api/generate-pdf'
 
@@ -122,15 +122,18 @@ export const useResumeExport = () => {
   const generateNodePDF = async (element: HTMLElement, options: ExportOptions = {}) => {
     const { filename = 'resume.pdf' } = options
     try {
+      console.log('開始後端 PDF 生成，API:', NODE_PDF_API)
       setExportState({ isExporting: true, progress: 10, error: null })
       const htmlContent = await getFullHtmlForExport(element)
       setExportState(prev => ({ ...prev, progress: 30 }))
       
+      console.log('發送請求到後端 API...')
       const response = await fetch(NODE_PDF_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html: htmlContent, filename })
       })
+      console.log('後端 API 響應狀態:', response.status)
       setExportState(prev => ({ ...prev, progress: 70 }))
       if (!response.ok) {
         // 如果是服務不可用錯誤，自動降級到前端 PDF 生成
@@ -200,15 +203,20 @@ export const useResumeExport = () => {
   // 匯出主流程
   const exportResume = async (options: ExportOptions = {}) => {
     try {
+      console.log('PDF 匯出開始，USE_BACKEND_PDF:', USE_BACKEND_PDF)
       await new Promise(resolve => setTimeout(resolve, 0))
       const targetElement = document.querySelector('#resume-preview') as HTMLElement
       if (!targetElement) throw new Error('找不到履歷預覽元素 (#resume-preview)')
-      if (USE_CSHARP_PDF) {
-        return await generateCSharpPDF(targetElement, options)
-      } else {
+      
+      if (USE_BACKEND_PDF) {
+        console.log('使用後端 PDF 生成')
         return await generateNodePDF(targetElement, options)
+      } else {
+        console.log('使用前端 PDF 生成')
+        return await generateCSharpPDF(targetElement, options)
       }
     } catch (error) {
+      console.error('PDF 匯出錯誤:', error)
       setExportState({ isExporting: false, progress: 0, error: error instanceof Error ? error.message : '匯出失敗' })
       throw error
     }
